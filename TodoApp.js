@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 import './TodoApp.css';
 
 function useLocalStorage(key, initialValue) {
@@ -45,12 +46,22 @@ function TodoApp() {
         todo.id === todoId ? { ...todo, completed: !todo.completed } : todo
       )
     );
+    const completedTodo = todos.find((todo) => todo.id === todoId);
+    const completionMessage = completedTodo.completed ? 'Todo marked as incomplete' : 'Todo completed';
+    toast.info(completionMessage, { autoClose: 2000 });
   };
 
+
   const handleDeleteSelectedTodos = () => {
+    if (selectedTodos.length === 0) {
+      toast.error('Please select at least one todo to delete.', { autoClose: 2000 });
+      return;
+    }
+
     setTodos((prevTodos) => prevTodos.filter((todo) => !selectedTodos.includes(todo.id)));
     setSelectedTodos([]);
-    toast.success('Selected todos have been deleted', { autoClose: 2000 });
+
+    toast.success('Selected todos deleted successfully.', { autoClose: 2000 });
   };
 
   const handleSelectTodo = (todoId) => {
@@ -81,6 +92,7 @@ function TodoApp() {
     setTodos((prevTodos) => [...prevTodos, newTodo]);
     setNewTodoTitle('');
     setNewTodoDescription('');
+    toast.success('Todo has been added', { autoClose: 2000 });
   };
 
   return (
