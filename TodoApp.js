@@ -1,4 +1,8 @@
+// TodoApp.js
+
 import React, { useState, useEffect } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './TodoApp.css';
 
 function useLocalStorage(key, initialValue) {
@@ -46,6 +50,7 @@ function TodoApp() {
   const handleDeleteSelectedTodos = () => {
     setTodos((prevTodos) => prevTodos.filter((todo) => !selectedTodos.includes(todo.id)));
     setSelectedTodos([]);
+    toast.success('Selected todos have been deleted', { autoClose: 2000 });
   };
 
   const handleSelectTodo = (todoId) => {
@@ -59,8 +64,14 @@ function TodoApp() {
   const handleFormSubmit = (event) => {
     event.preventDefault();
     if (newTodoTitle.trim() === '') {
+      toast.error('Please enter a todo title', { autoClose: 2000 });
       return;
     }
+    if (newTodoDescription.trim() === '') {
+      toast.error('Please enter a todo description', { autoClose: 2000 });
+      return;
+    }
+
     const newTodo = {
       id: Date.now(),
       title: newTodoTitle,
@@ -73,7 +84,8 @@ function TodoApp() {
   };
 
   return (
-    <div>
+    <div className="container">
+      <h1 className="title">Todo App</h1>
       <form onSubmit={handleFormSubmit}>
         <input
           type="text"
@@ -111,9 +123,14 @@ function TodoApp() {
           </li>
         ))}
       </ul>
-      <button onClick={handleDeleteSelectedTodos} disabled={selectedTodos.length === 0}>
+      <button
+        className="delete-btn"
+        onClick={handleDeleteSelectedTodos}
+        disabled={selectedTodos.length === 0}
+      >
         Delete Selected
       </button>
+      <ToastContainer />
     </div>
   );
 }
